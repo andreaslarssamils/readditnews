@@ -301,6 +301,12 @@ As an admin, I want to approve or reject posts so that only appropriate content 
 ### Input Validation
 
 ## Technologies Used
+- dj-database-url-3.1.2
+- django-4.2
+- gunicorn-25.3.0
+- psycopg2-binary-2.9.11
+- whitenoise-6.12.0
+
 
 ## Testing
 
