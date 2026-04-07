@@ -1,7 +1,8 @@
 asgiref==3.11.1
 dj-database-url==3.1.2
 dj-email-url==1.0.6
-Django==4.2
+Django==5.2.13
+django-allauth==65.15.1
 django-cache-url==3.4.6
 environs==15.0.1
 gunicorn==25.3.0
