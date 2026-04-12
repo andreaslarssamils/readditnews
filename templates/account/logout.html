@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Log out - Readditnews
+{% endblock title %}
+{% block content %}
+    <h1>Log out</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit">Log out</button>
+    </form>
+{% endblock content %}
