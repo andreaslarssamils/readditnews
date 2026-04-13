@@ -310,8 +310,13 @@ As an admin, I want to approve or reject posts so that only appropriate content 
 
 ## Testing
 
-| Test | Action                 | Expected Result            | Actual Result | Pass |
-| ---- | ---------------------- | -------------------------- | ------------- | ---- |
+| Test | Action | Expected Result | Actual Result | Pass |
+| ---- | ------ | --------------- | ------------- | ---- |
+| test_create_user | Create a regular user with username, email, and password | User is created with correct attributes, is_active=True, is_staff=False, is_superuser=False | Works | ✅ |
+| test_create_superuser | Create a superuser with username, email, and password | User is created with correct attributes, is_active=True, is_staff=True, is_superuser=True | Works | ✅ |
+| test_signup_template | GET request to /accounts/signup/ | Status 200, correct template used, contains "Create an account" | Works | ✅ |
+| test_signup_form | POST valid data to /accounts/signup/ | User is created in database, redirects with status 302 | Works | ✅ |
+| test_signup_view | Resolve /accounts/signup/ URL | URL resolves to allauth SignupView | Works | ✅ |
 
 
 ## Bugs and Fixes
