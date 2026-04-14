@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <span class="badge bg-secondary">{{ post.category }}</span>
+            <small class="text-muted">Posted by {{ post.author }} · {{ post.created_at|timesince }} ago</small>
+            <h2 class="mt-2">{{ post.title }}</h2>
+            {% if post.image %}
+                <img src="{{ post.image.url }}"
+                     class="img-fluid rounded mb-3"
+                     alt="{{ post.title }}">
+            {% endif %}
+            {% if post.url %}
+                <p>
+                    <a href="{{ post.url }}" target="_blank">{{ post.url }}</a>
+                </p>
+            {% endif %}
+            <p>{{ post.content }}</p>
+        </div>
+    </div>
+{% endblock content %}
