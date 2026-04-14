@@ -21,7 +21,9 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = "posts/post_create.html"
     fields = ["title", "content", "image", "url", "category"]
-    success_url = reverse_lazy("post_list")
+
+    def get_success_url(self):
+        return reverse_lazy("post_detail", kwargs={"slug": self.object.slug})
 
     def form_valid(self, form):
         form.instance.author = self.request.user
