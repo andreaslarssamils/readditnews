@@ -2,6 +2,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView
 
+from posts.forms import PostForm
+
 from .models import Post
 
 
@@ -20,7 +22,8 @@ class PostDetailView(DetailView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = "posts/post_create.html"
-    fields = ["title", "content", "image", "url", "category"]
+    form_class = PostForm
+    # fields = ["title", "content", "image", "url", "category"]
 
     def get_success_url(self):
         return reverse_lazy("post_detail", kwargs={"slug": self.object.slug})
