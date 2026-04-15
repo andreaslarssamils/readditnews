@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "cloudinary_storage",  # for cloudinary media storage
     "django.contrib.staticfiles",
+    "cloudinary_storage",  # for cloudinary media storage
     "django.contrib.sites",
     # local apps
     "accounts",
