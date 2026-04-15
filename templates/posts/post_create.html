@@ -10,4 +10,7 @@
             </form>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}
+{% block extra_js %}
+    {{ form.media }}
+{% endblock extra_js %}
