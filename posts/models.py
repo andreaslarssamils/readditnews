@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
@@ -8,7 +9,7 @@ from django.utils.text import slugify
 class Post(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
-    image = models.ImageField(upload_to="posts/", blank=True)
+    image = CloudinaryField("image", blank=True, default="placeholder")
     url = models.URLField(blank=True, default="")
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,

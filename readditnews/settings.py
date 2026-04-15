@@ -175,6 +175,7 @@ CLOUDINARY_STORAGE = {
     "API_KEY": env("CLOUDINARY_API_KEY"),
     "API_SECRET": env("CLOUDINARY_API_SECRET"),
 }
+CLOUDINARY_URL = env("CLOUDINARY_URL")
 
 
 STATICFILES_STORAGE = "whitenoise.storage.StaticFilesStorage"
