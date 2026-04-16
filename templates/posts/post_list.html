@@ -6,6 +6,16 @@
             <a href="{% url 'post_create' %}" class="btn btn-primary">+ Create Post</a>
         {% endif %}
     </div>
+    <div class="mb-3">
+        <a href="{% url 'post_list' %}"
+           class="btn btn-sm {% if not active_category %}btn-dark{% else %}btn-outline-dark{% endif %} me-1">All</a>
+        {% for category in categories %}
+            <a href="?category={{ category.slug }}"
+               class="btn btn-sm {% if active_category == category.slug %}btn-dark{% else %}btn-outline-dark{% endif %} me-1">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
     {% for post in posts %}
         <div class="card mb-3">
             <div class="card-body">

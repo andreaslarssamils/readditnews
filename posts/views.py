@@ -11,7 +11,7 @@ from django.views.generic import (
 
 from posts.forms import CommentForm, PostForm
 
-from .models import Post
+from .models import Category, Post
 
 
 class PostListView(ListView):
@@ -20,6 +20,19 @@ class PostListView(ListView):
     model = Post
     template_name = "posts/post_list.html"
     context_object_name = "posts"
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        category = self.request.GET.get("category")
+        if category:
+            qs = qs.filter(category__slug=category)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        context["active_category"] = self.request.GET.get("category")
+        return context
 
 
 class PostDetailView(DetailView):
