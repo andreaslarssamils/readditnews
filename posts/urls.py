@@ -8,6 +8,13 @@ urlpatterns = [
     path("post/<slug:slug>/", views.PostDetailView.as_view(), name="post_detail"),
     path("post/<slug:slug>/edit/", views.PostUpdateView.as_view(), name="post_edit"),
     path(
-        "post/<slug:slug>/delete/", views.PostDeleteView.as_view(), name="post_delete"
+        "post/<slug:slug>/delete/",
+        views.PostDeleteView.as_view(),
+        name="post_delete",
+    ),
+    path(
+        "post/<slug:slug>/vote/<str:value>/",
+        views.PostVoteView.as_view(),
+        name="post_vote",
     ),
 ]

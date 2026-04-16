@@ -5,6 +5,17 @@
             <span class="badge bg-secondary">{{ post.category }}</span>
             <small class="text-muted">Posted by {{ post.author }} · {{ post.created_at|timesince }} ago</small>
             <h2 class="mt-2">{{ post.title }}</h2>
+            {% if request.user.is_authenticated %}
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <button class="btn btn-sm btn-outline-success vote-btn"
+                            data-slug="{{ post.slug }}"
+                            data-value="1">▲ Upvote</button>
+                    <span id="vote-score"><strong>{{ post.votes.all|length }}</strong></span>
+                    <button class="btn btn-sm btn-outline-danger vote-btn"
+                            data-slug="{{ post.slug }}"
+                            data-value="-1">▼ Downvote</button>
+                </div>
+            {% endif %}
             {% if post.image %}
                 <img src="{{ post.image.url }}"
                      class="img-fluid rounded mb-3"
@@ -54,3 +65,21 @@
         {% endif %}
     </div>
 {% endblock content %}
+{% block extra_js %}
+    <script>
+        $(document).ready(function() {
+            $(".vote-btn").on("click", function() {
+                const slug = $(this).data("slug");
+                const value = $(this).data("value");
+                $.ajax({
+                    url: `/post/${slug}/vote/${value}/`,
+                    method: "POST",
+                    headers: {"X-CSRFToken": "{{ csrf_token }}"},
+                    success: function(data) {
+                        $("#vote-score").html(`<strong>${data.score}</strong>`);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock extra_js %}

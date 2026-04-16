@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -11,7 +13,7 @@ from django.views.generic import (
 
 from posts.forms import CommentForm, PostForm
 
-from .models import Category, Post
+from .models import Category, Post, Vote
 
 
 class PostListView(ListView):
@@ -97,3 +99,22 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.get_object().author == self.request.user
+
+
+class PostVoteView(LoginRequiredMixin, View):
+    def post(self, request, slug, value):
+        value = int(value)
+        post = Post.objects.get(slug=slug)
+        existing = Vote.objects.filter(post=post, user=request.user).first()
+
+        if existing:
+            if existing.value == value:
+                existing.delete()  # Samma röst igen = ta bort
+            else:
+                existing.value = value
+                existing.save()
+        else:
+            Vote.objects.create(post=post, user=request.user, value=value)
+
+        score = sum(v.value for v in post.votes.all())
+        return JsonResponse({"score": score})

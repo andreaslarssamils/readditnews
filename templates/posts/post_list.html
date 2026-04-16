@@ -30,6 +30,10 @@
                          alt="{{ post.title }}">
                 {% endif %}
                 <p class="card-text text-muted">{{ post.content|truncatewords:30|safe }}</p>
+                <div class="mt-2">
+                    <span class="text-success me-2">▲ {{ post.votes.all|length }}</span>
+                    <span class="text-muted">{{ post.comments.count }} comment{{ post.comments.count|pluralize }}</span>
+                </div>
             </div>
         </div>
     {% empty %}
