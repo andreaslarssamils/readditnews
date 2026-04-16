@@ -16,6 +16,15 @@
             </a>
         {% endfor %}
     </div>
+    <select class="form-select form-select-sm w-auto"
+            onchange="window.location='?sort='+this.value+'{% if active_category %}&category={{ active_category }}{% endif %}'">
+        <option value="newest" {% if active_sort == "newest" %}selected{% endif %}>Newest</option>
+        <option value="oldest" {% if active_sort == "oldest" %}selected{% endif %}>Oldest</option>
+        <option value="most_voted"
+                {% if active_sort == "most_voted" %}selected{% endif %}>Most Voted</option>
+        <option value="least_voted"
+                {% if active_sort == "least_voted" %}selected{% endif %}>Least Voted</option>
+    </select>
     {% for post in posts %}
         <div class="card mb-3">
             <div class="card-body">
@@ -31,7 +40,7 @@
                 {% endif %}
                 <p class="card-text text-muted">{{ post.content|truncatewords:30|safe }}</p>
                 <div class="mt-2">
-                    <span class="text-success me-2">▲ {{ post.votes.all|length }}</span>
+                    <span class="text-success me-2">▲ {{ post.vote_score }}</span>
                     <span class="text-muted">{{ post.comments.count }} comment{{ post.comments.count|pluralize }}</span>
                 </div>
             </div>

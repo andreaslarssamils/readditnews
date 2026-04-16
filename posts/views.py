@@ -24,16 +24,37 @@ class PostListView(ListView):
     context_object_name = "posts"
 
     def get_queryset(self):
+        from django.db.models import Sum, Value
+        from django.db.models.functions import Coalesce
+
         qs = super().get_queryset()
         category = self.request.GET.get("category")
         if category:
             qs = qs.filter(category__slug=category)
+
+        sort = self.request.GET.get("sort", "newest")
+
+        if sort == "oldest":
+            qs = qs.order_by("created_at")
+        elif sort == "most_voted":
+            qs = qs.annotate(score=Coalesce(Sum("votes__value"), Value(0))).order_by(
+                "-score"
+            )
+        elif sort == "least_voted":
+            qs = qs.annotate(score=Coalesce(Sum("votes__value"), Value(0))).order_by(
+                "score"
+            )
+        else:  # newest (default)
+            qs = qs.order_by("-created_at")
+
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
         context["active_category"] = self.request.GET.get("category")
+        context["active_sort"] = self.request.GET.get("sort", "newest")
+
         return context
 
 
