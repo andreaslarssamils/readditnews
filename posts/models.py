@@ -7,6 +7,8 @@ from django.utils.text import slugify
 
 
 class Post(models.Model):
+    """Model representing a blog post."""
+
     title = models.CharField(max_length=255)
     content = models.TextField()
     image = CloudinaryField("image", blank=True, default="placeholder")
@@ -41,6 +43,8 @@ class Post(models.Model):
 
 
 class Category(models.Model):
+    """Model representing a category for blog posts."""
+
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
 
@@ -54,3 +58,26 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Comment(models.Model):
+    """Model representing a comment on a blog post."""
+
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"Comment by {self.author} on {self.post}"
