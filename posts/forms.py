@@ -24,7 +24,8 @@ class PostForm(forms.ModelForm):
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
             raise forms.ValidationError(
-                "A post with this title already exists. Please choose a different title."
+                "A post with this title already exists. "
+                "Please choose a different title."
             )
         return title
 

@@ -37,13 +37,13 @@ class PostListView(ListView):
         if sort == "oldest":
             qs = qs.order_by("created_at")
         elif sort == "most_voted":
-            qs = qs.annotate(score=Coalesce(Sum("votes__value"), Value(0))).order_by(
-                "-score"
-            )
+            qs = qs.annotate(
+                score=Coalesce(Sum("votes__value"), Value(0))
+                ).order_by("-score")
         elif sort == "least_voted":
-            qs = qs.annotate(score=Coalesce(Sum("votes__value"), Value(0))).order_by(
-                "score"
-            )
+            qs = qs.annotate(
+                score=Coalesce(Sum("votes__value"), Value(0))
+                ).order_by("score")
         else:  # newest (default)
             qs = qs.order_by("-created_at")
 
@@ -98,7 +98,10 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """View to edit an existing post. Only accessible to the author of the post."""
+    """
+        View to edit an existing post.
+        Only accessible to the author of the post.
+    """
 
     model = Post
     template_name = "posts/post_edit.html"

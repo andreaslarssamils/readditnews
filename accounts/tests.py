@@ -11,7 +11,9 @@ class CustomUserTests(TestCase):
         """Test creating a regular user with the custom user model."""
         User = get_user_model()
         user = User.objects.create_user(
-            username="testuser", email="testuser@email.com", password="testpass123"
+            username="testuser",
+            email="testuser@email.com",
+            password="testpass123"
         )
         self.assertEqual(user.username, "testuser")
         self.assertEqual(user.email, "testuser@email.com")
@@ -24,7 +26,9 @@ class CustomUserTests(TestCase):
 
         User = get_user_model()
         admin_user = User.objects.create_superuser(
-            username="superadmin", email="superadmin@email.com", password="testpass123"
+            username="superadmin",
+            email="superadmin@email.com",
+            password="testpass123"
         )
         self.assertEqual(admin_user.username, "superadmin")
         self.assertEqual(admin_user.email, "superadmin@email.com")
@@ -45,11 +49,17 @@ class SignupPageTests(TestCase):
         self.response = self.client.get(url)
 
     def test_signup_template(self):
-        """Test that the signup page uses the correct template and contains the expected content."""
+        """
+            Test that the signup page uses the correct
+            template and contains the expected content.
+        """
         self.assertEqual(self.response.status_code, 200)
         self.assertTemplateUsed(self.response, "account/signup.html")
         self.assertContains(self.response, "Create an account")
-        self.assertNotContains(self.response, "Hi there! I should not be on the page.")
+        self.assertNotContains(
+            self.response,
+            "Hi there! I should not be on the page."
+        )
 
     def test_signup_form(self):
         """Test that the signup form works correctly."""
@@ -66,7 +76,9 @@ class SignupPageTests(TestCase):
             response.status_code, 302
         )  # Check for a redirect after successful signup
         self.assertEqual(get_user_model().objects.all().count(), 1)
-        self.assertEqual(get_user_model().objects.all()[0].username, self.username)
+        self.assertEqual(
+            get_user_model().objects.all()[0].username, self.username
+        )
         self.assertEqual(get_user_model().objects.all()[0].email, self.email)
 
     def test_signup_view(self):

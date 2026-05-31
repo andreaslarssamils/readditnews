@@ -88,9 +88,15 @@ class Vote(models.Model):
     DOWNVOTE = -1
     VALUE_CHOICES = [(UPVOTE, "Upvote"), (DOWNVOTE, "Downvote")]
 
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="votes")
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="votes"
+    )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="votes"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="votes"
     )
     value = models.SmallIntegerField(choices=VALUE_CHOICES)
 

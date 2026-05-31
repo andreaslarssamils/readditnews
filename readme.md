@@ -326,6 +326,9 @@ As an admin, I want to approve or reject posts so that only appropriate content 
 
 ## Validator Testing
 
+PEP8 validation was run using pycodestyle in the terminal. Migration files were excluded from the validation process to focus on the main project codebase. The output identified remaining E501 line-length issues in "posts, accounts, and readditnews".
+![PEP8 Validation Output](/media/pycodestyle.png)
+
 ## Deployment
 
 ## Credits and attributions
