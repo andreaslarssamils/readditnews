@@ -26,7 +26,7 @@
                     <a href="{{ post.url }}" target="_blank">{{ post.url }}</a>
                 </p>
             {% endif %}
-            <p>{{ post.content|safe }}</p>
+            <div>{{ post.content|safe }}</div>
             {% if request.user == post.author %}
                 <a href="{% url 'post_edit' post.slug %}"
                    class="btn btn-sm btn-outline-secondary">Edit</a>
@@ -36,7 +36,7 @@
         </div>
     </div>
     <div class="mt-4">
-        <h5>{{ comments.count }} Comment{{ comments|length|pluralize }}</h5>
+        <h3>{{ comments.count }} Comment{{ comments|length|pluralize }}</h3>
         {% for comment in comments %}
             <div class="card mb-2">
                 <div class="card-body py-2">
@@ -50,7 +50,7 @@
         {% if request.user.is_authenticated %}
             <div class="card mt-3">
                 <div class="card-body">
-                    <h6>Leave a comment</h6>
+                    <h4>Leave a comment</h4>
                     <form method="post">
                         {% csrf_token %}
                         {{ comment_form.as_p }}

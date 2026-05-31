@@ -30,15 +30,15 @@
             <div class="card-body">
                 <span class="badge bg-secondary">{{ post.category }}</span>
                 <small class="text-muted">Posted by {{ post.author }} · {{ post.created_at|timesince }} ago</small>
-                <h5 class="card-title mt-1">
+                <h2 class="card-title mt-1">
                     <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
-                </h5>
+                </h2>
                 {% if post.image %}
                     <img src="{{ post.image.url }}"
                          class="img-fluid rounded mb-2"
                          alt="{{ post.title }}">
                 {% endif %}
-                <p class="card-text text-muted">{{ post.content|truncatewords:30|safe }}</p>
+                <div class="card-text text-muted">{{ post.content|truncatewords:30|safe }}</div>
                 <div class="mt-2">
                     <span class="text-success me-2">▲ {{ post.vote_score }}</span>
                     <span class="text-muted">{{ post.comments.count }} comment{{ post.comments.count|pluralize }}</span>
