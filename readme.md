@@ -335,6 +335,17 @@ No Warnings or Errors were found in the HTML code, confirming that it adheres to
 
 ![HTML Validation Output](/media/validator-html.png)
 
+CSS code has been validated using the W3C CSS Validator (https://jigsaw.w3.org/css-validator/).
+During the validation of the website's CSS code, a warning appears stating: "Due to their dynamic nature, CSS variables are currently not statically checked".
+
+This is not a code error, but rather a technical notice from the validator. The warning occurs because the project utilizes CSS variables (custom properties) to efficiently manage elements such as colors and themes. Because CSS variables are dynamic—meaning their values can change in real time via JavaScript or depending on their location within the HTML structure—the validator cannot verify them through a purely static analysis of the code.
+
+The browser handles the code completely correctly, and the warning therefore has no negative impact on the website's design, functionality, or performance. Aside from this standard notice regarding dynamic variables, the rest of the CSS stylesheet passes the validation successfully with no errors.
+
+![CSS Validation Output](/media/css-error-warnings.png)
+
+![CSS Validation Output](/media/css-validation.png)
+
 ## Deployment
 
 ## Credits and attributions
