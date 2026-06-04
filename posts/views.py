@@ -39,12 +39,16 @@ class PostListView(ListView):
         if sort == "oldest":
             qs = qs.order_by("created_at")
         elif sort == "most_voted":
-            qs = qs.annotate(score=Coalesce(Sum("votes__value"), Value(0))).order_by(
-                "-score"
+            qs = qs.annotate(score=Coalesce(
+                Sum("votes__value"),
+                Value(0))).order_by(
+                    "-score"
             )
         elif sort == "least_voted":
-            qs = qs.annotate(score=Coalesce(Sum("votes__value"), Value(0))).order_by(
-                "score"
+            qs = qs.annotate(score=Coalesce(
+                Sum("votes__value"),
+                Value(0))).order_by(
+                    "score"
             )
         else:  # newest (default)
             qs = qs.order_by("-created_at")
@@ -78,7 +82,10 @@ class PostDetailView(DetailView):
         form = CommentForm(request.POST)
 
         if not request.user.is_authenticated:
-            messages.error(request, "You must be logged in to leave a comment.")
+            messages.error(
+                request,
+                "You must be logged in to leave a comment."
+            )
         elif form.is_valid():
             comment = form.save(commit=False)
             comment.post = self.object
@@ -87,7 +94,8 @@ class PostDetailView(DetailView):
             messages.success(request, "Your comment was added.")
         else:
             messages.error(
-                request, "There was an error with your comment. Please try again."
+                request,
+                "There was an error with your comment. Please try again."
             )
 
         return redirect("post_detail", slug=self.object.slug)
