@@ -138,6 +138,8 @@ As a guest, I want to search for posts so that I can quickly find specific conte
 - Display results or "no results" message
 - Add URL route for search
 
+US3 was not implemented within the current project scope and remains as a future feature.
+
 ---
 
 #### US4 - Sort Posts
@@ -373,7 +375,15 @@ As an admin, I want to approve or reject posts so that only appropriate content 
 - gunicorn-25.3.0
 - psycopg2-binary-2.9.11
 - whitenoise-6.12.0
-
+- python
+- HTML
+- CSS
+- JavaScript
+- Cloudinary (for media storage)
+- PostgreSQL (database)
+- django-allauth (authentication)
+- django-summernote (rich text editor)
+- Heroku (deployment)
 
 ## Testing
 
@@ -385,11 +395,73 @@ As an admin, I want to approve or reject posts so that only appropriate content 
 | test_signup_form | POST valid data to /accounts/signup/ | User is created in database, redirects with status 302 | Works | ✅ |
 | test_signup_view | Resolve /accounts/signup/ URL | URL resolves to allauth SignupView | Works | ✅ |
 
+# Manual Testing
+
+The following manual tests were carried out on the deployed Heroku application
+to verify that all features work correctly across the entire application.
+
+## Test Results
+
+| Feature | Test | Action | Expected Result | Actual Result | Pass |
+|---------|------|--------|-----------------|---------------|------|
+| **Navigation** | Logged-out header | Load any page without logging in | Header shows Register and Login links only — no Create Post button | As expected | ✅ |
+| **Navigation** | Logged-in header | Log in and load any page | Header shows Create Post button, and Logout link | As expected | ✅ |
+| **Navigation** | Footer | Load any page | Footer displays "© 2025 Readditnews" | As expected | ✅ |
+| **Navigation** | Brand link | Click "Readditnews" in the header | Redirects to the post feed (homepage) | As expected | ✅ |
+| **Authentication** | Register — valid data | Navigate to /accounts/signup/, fill in email, username, and matching passwords, click Register | Account is created, user is logged in and redirected to the feed | As expected | ✅ |
+| **Authentication** | Register — duplicate username | Submit registration form with an already existing username | Form shows validation error, no account created | As expected | ✅ |
+| **Authentication** | Register — mismatched passwords | Submit form with two different passwords | Form shows "The two password fields didn't match" error | As expected | ✅ |
+| **Authentication** | Register — missing fields | Submit form with one or more required fields empty | Form shows field-level validation errors | As expected | ✅ |
+| **Authentication** | Login — valid credentials | Enter correct username and password, click Log In | User is logged in and redirected to the feed | As expected | ✅ |
+| **Authentication** | Login — invalid credentials | Enter incorrect password and click Log In | Error message shown, user remains on login page | As expected | ✅ |
+| **Authentication** | Logout | Click Logout in the header | User is logged out, redirected to the feed, header shows Register/Login | As expected | ✅ |
+| **Post Feed** | Feed loads | Navigate to the homepage | Post list is displayed with title, category badge, author, time ago, image, vote indicator, comment count, and excerpt for each post | As expected | ✅ |
+| **Post Feed** | Empty feed | Visit feed when no posts exist | Page loads without errors | As expected | ✅ |
+| **Post Feed** | Post link | Click a post title in the feed | Navigates to the correct post detail page | As expected | ✅ |
+| **Category Filter** | Filter by category | Click a category button (e.g. Technology) | Only posts from that category are displayed | As expected | ✅ |
+| **Category Filter** | Active state | Click a category button | Selected category button is visually highlighted/active | As expected | ✅ |
+| **Category Filter** | Show all | Click the "All" button after filtering | All posts are displayed again | As expected | ✅ |
+| **Sort** | Sort Newest (default) | Load the feed without changing sort | Posts are ordered with the most recent first | As expected | ✅ |
+| **Sort** | Sort Oldest | Select "Oldest" from the sort dropdown | Posts are ordered with the oldest first | As expected | ✅ |
+| **Sort** | Sort Most Voted | Select "Most Voted" from the sort dropdown | Posts are ordered by highest vote score first | As expected | ✅ |
+| **Sort** | Sort Least Voted | Select "Least Voted" from the sort dropdown | Posts are ordered by lowest vote score first | As expected | ✅ |
+| **Create Post** | Create Post button visibility | Log in and visit the feed | Create Post button is visible in the header | As expected | ✅ |
+| **Create Post** | Create Post button — logged out | Visit the feed without logging in | Create Post button is not visible | As expected | ✅ |
+| **Create Post** | Create post — valid data | Fill in title, select category, add content, click Post | Post is saved and user is redirected to the new post detail page | As expected | ✅ |
+| **Create Post** | Create post — missing required fields | Submit the create form with title or content empty | Form shows validation errors, this field is required, and Please fill in this field. | As expected | ✅ |
+| **Create Post** | Create post — success message | Successfully create a post | "Your post was created successfully." message is displayed | As expected | ✅ |
+| **Create Post** | Direct URL access — logged out | Navigate to /posts/create/ without logging in | Redirected to the login page | As expected | ✅ |
+| **Edit Post** | Edit button visibility | View a post you authored | Edit button is visible on the post detail page | As expected | ✅ |
+| **Edit Post** | Edit button — other user's post | View a post authored by a different user | Edit button is not visible | As expected | ✅ |
+| **Edit Post** | Edit post — valid data | Click Edit, change the content, save | Post is updated and user is redirected to the post detail page | As expected | ✅ |
+| **Edit Post** | Edit post — success message | Successfully save an edit | "Your post was updated successfully." message is displayed | As expected | ✅ |
+| **Edit Post** | Edit URL — wrong user | Log in as a different user and manually navigate to /posts/edit/<slug>/ | Access is denied (403 Forbidden) | As expected | ✅ |
+| **Delete Post** | Delete button visibility | View a post you authored | Delete button is visible on the post detail page | As expected | ✅ |
+| **Delete Post** | Delete button — other user's post | View a post authored by a different user | Delete button is not visible | As expected | ✅ |
+| **Delete Post** | Delete confirmation | Click Delete on your own post | A confirmation page is shown before deletion | As expected | ✅ |
+| **Delete Post** | Delete post | Confirm deletion on the confirmation page | Post is deleted, user is redirected to the feed | As expected | ✅ |
+| **Delete Post** | Delete post — success message | Successfully delete a post | "Your post has been deleted." message is displayed | As expected | ✅ |
+| **Delete Post** | Delete URL — wrong user | Log in as a different user and navigate to /posts/delete/<slug>/ | Access is denied (403 Forbidden) | As expected | ✅ |
+| **Comments** | Comment form — logged in | Open a post detail page while logged in | Comment form is visible | As expected | ✅ |
+| **Comments** | Comment form — logged out | Open a post detail page without logging in | Comment form is not shown; "Log in to leave a comment" prompt is displayed | As expected | ✅ |
+| **Comments** | Submit valid comment | Type a comment and click Comment | Comment appears on the page with the correct author and timestamp | As expected | ✅ |
+| **Comments** | Comment success message | Successfully submit a comment | "Your comment was added." message is displayed | As expected | ✅ |
+| **Comments** | Submit empty comment | Browser shows "Please fill in this field." — comment is not submitted | Browser shows native validation message | As expected | ✅ |
+| **Voting** | Upvote a post | Log in and click the upvote button on a post | Vote score increases by 1 immediately | As expected | ✅ |
+| **Voting** | Remove vote (toggle) | Click the same vote button again | Vote is removed and score returns to previous value | As expected | ✅ |
+| **Voting** | Change vote direction | Upvote a post, then click downvote | Vote changes direction and score updates accordingly | As expected | ✅ |
+| **Voting** | Vote — logged out | Visit the feed without logging in | Vote buttons require login (redirect or prompt) | As expected | ✅ |
+| **Admin** | Admin access | Log in to /admin/ as a superuser | Admin panel is accessible | As expected | ✅ |
+| **Admin** | Manage posts | In admin, edit or delete any post | Changes are saved and reflected on the site | As expected | ✅ |
+| **Admin** | Manage categories | In admin, create a new category | Category appears in the category filter on the feed | As expected | ✅ |
+
 
 ## Bugs and Fixes
 
-| Bug                                   | Cause                          | Fix                         |
-| ------------------------------------- | ------------------------------ | --------------------------- |
+| Bug | Cause | Fix |
+|-----|-------|-----|
+| Voting on a post with an invalid or deleted slug caused an unhandled server error (500) instead of a proper error page | `PostVoteView` used `Post.objects.get(slug=slug)` which raises an unhandled `Post.DoesNotExist` exception if the post no longer exists | Replaced with `get_object_or_404(Post, slug=slug)` so the server returns a standard 404 response |
+| No visual feedback was shown to users after creating, editing, or deleting a post — the action completed silently | The CBVs (`PostCreateView`, `PostUpdateView`, `PostDeleteView`) did not implement Django's messages framework | Added `SuccessMessageMixin` to all three views and defined a `success_message` on each; also added `messages.success()` and `messages.error()` to the comment submission handler in `PostDetailView` |
 
 ## Validator Testing
 
@@ -413,7 +485,206 @@ The browser handles the code completely correctly, and the warning therefore has
 
 ![CSS Validation Output](/media/css-validation.png)
 
+
 ## Deployment
 
-## Credits and attributions
+The live application is deployed on Heroku and can be accessed at:
+**https://readditnews-8170329d1dfc.herokuapp.com**
+
+---
+
+### Deploying to Heroku
+
+#### Prerequisites
+
+- A [Heroku](https://heroku.com) account
+- A [Cloudinary](https://cloudinary.com) account (for media file storage)
+- A PostgreSQL database (e.g. [Heroku Postgres](https://elements.heroku.com/addons/heroku-postgresql) or [Neon](https://neon.tech))
+
+---
+
+#### 1. Clone the repository
+
+```bash
+git clone https://github.com/andreaslarssamils/readditnews
+cd readditnews
+```
+
+---
+
+#### 2. Create a Heroku app
+
+1. Log in to [dashboard.heroku.com](https://dashboard.heroku.com).
+2. Click **New → Create new app**.
+3. Give the app a name and select your region, then click **Create app**.
+
+---
+
+#### 3. Set up a PostgreSQL database
+
+1. In the Heroku dashboard, go to the **Resources** tab.
+2. Under **Add-ons**, search for **Heroku Postgres** and select it.
+3. Choose a plan and click **Submit Order Form**.
+4. Heroku will automatically add a `DATABASE_URL` Config Var under **Settings**.
+
+---
+
+#### 4. Set up Cloudinary
+
+1. Log in to [Cloudinary](https://cloudinary.com) and go to your dashboard.
+2. Copy your **Cloud Name**, **API Key**, **Cloudinary URL** and, **API Secret** — you will need these in the next step.
+
+---
+
+#### 5. Set Config Vars
+
+1. In the Heroku dashboard, go to **Settings → Config Vars → Reveal Config Vars**.
+2. Add the following key/value pairs:
+
+| Key | Value |
+|-----|-------|
+| `SECRET_KEY` | Your Django secret key (a long random string) |
+| `DATABASE_URL` | Your PostgreSQL connection URL |
+| `DEBUG` | `False` |
+| `ALLOWED_HOSTS` | Your Heroku app hostname, e.g. `your-app-name.herokuapp.com` |
+| `CLOUDINARY_URL` | Your full Cloudinary URL (`cloudinary://<key>:<secret>@<cloud_name>`) |
+| `CLOUDINARY_API_KEY` | Your Cloudinary API key |
+| `CLOUDINARY_API_SECRET` | Your Cloudinary API secret |
+| `CLOUDINARY_CLOUD_NAME` | Your Cloudinary cloud name |
+
+> ⚠️ Never commit these values to version control. They are stored as
+> environment variables only.
+
+---
+
+#### 6. Ensure the following files are in place
+
+**`Procfile`** (in the project root — tells Heroku how to run the app):
+
+```
+web: gunicorn readditnews.wsgi
+```
+
+**`requirements.txt`** (lists all dependencies — keep this up to date):
+
+```bash
+pip freeze > requirements.txt
+```
+
+---
+
+#### 7. Connect GitHub and deploy
+
+1. In the Heroku dashboard, go to **Deploy → Deployment method**.
+2. Select **GitHub** and connect your repository.
+3. Under **Manual deploy**, select the `main` branch and click **Deploy Branch**.
+4. Once the build completes, click **Open app** to verify the deployment.
+
+To enable automatic deploys on every push to `main`, click **Enable Automatic Deploys**.
+
+---
+
+#### 8. Run database migrations
+
+1. In the Heroku dashboard, go to **More → Run console**.
+2. Enter the following commands one at a time:
+
+```
+python manage.py migrate
+```
+
+```
+python manage.py createsuperuser
+```
+
+---
+
+### Running Locally
+
+#### 1. Clone the repository and create a virtual environment
+
+```bash
+git clone https://github.com/<your-username>/readditnews.git
+cd readditnews
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+#### 2. Create an `env.py` file in the project root
+
+```python
+import os
+
+os.environ["SECRET_KEY"] = "your-local-secret-key"
+os.environ["DATABASE_URL"] = "your-database-url"
+os.environ["CLOUDINARY_URL"] = "your-cloudinary-url"
+os.environ["CLOUDINARY_API_KEY"] = "your-api-key"
+os.environ["CLOUDINARY_API_SECRET"] = "your-api-secret"
+os.environ["CLOUDINARY_CLOUD_NAME"] = "your-cloud-name"
+os.environ["DEBUG"] = "True"
+```
+
+> Ensure `env.py` is listed in `.gitignore` so it is never committed.
+
+#### 3. Apply migrations and run the server
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+The application will be available at `http://127.0.0.1:8000`.
+
+---
+
+### Security Notes
+
+- `DEBUG` is set to `False` in production via a Config Var.
+- `SECRET_KEY` is never stored in the codebase — it is read from the environment.
+- `DATABASE_URL` and Cloudinary credentials are stored as Heroku Config Vars only.
+- `env.py` is included in `.gitignore` and has never been committed to the repository.
+
+
+
+## Credits and Attributions
+
+### Frameworks and Libraries
+- [Django](https://www.djangoproject.com/) — web framework
+- [django-allauth](https://django-allauth.readthedocs.io/) — authentication
+- [django-summernote](https://github.com/summernote/django-summernote) — rich text editor
+- [WhiteNoise](https://whitenoise.readthedocs.io/) — static file serving
+- [dj-database-url](https://github.com/jazzband/dj-database-url) — database configuration
+- [Gunicorn](https://gunicorn.org/) — WSGI server
+- [psycopg2](https://www.psycopg.org/) — PostgreSQL adapter
+
+### Services
+- [Heroku](https://heroku.com) — cloud hosting platform
+- [Cloudinary](https://cloudinary.com) — media file storage
+- [PostgreSQL](https://www.postgresql.org/) — relational database
+
+### Fonts
+- [Google Sans](https://fonts.google.com/) — heading font, via Google Fonts
+- [Source Serif 4](https://fonts.google.com/specimen/Source+Serif+4) — body font, via Google Fonts
+
+### Tools
+- [W3C HTML Validator](https://validator.w3.org/) — HTML validation
+- [W3C CSS Validator](https://jigsaw.w3.org/css-validator/) — CSS validation
+- [pycodestyle](https://pycodestyle.pycqa.org/) — PEP8 validation
+
+### Acknowledgements
+- Code Institute — project brief and learning outcomes
+
+### References
+- [LearnDjango](https://learndjango.com/) — Django tutorials and best practices by Will Vincent
+
+- [Google Gemini](https://gemini.google.com/) — AI tool used to generate
+  post content and images for development and testing
+
+- [Claude](https://claude.ai) by Anthropic — AI assistant used for
+  code guidance, improvements, debugging, and documentation support
+
+- [GitHub Copilot](https://copilot.github.com/) by GitHub — AI code completion
+  tool used to assist with coding tasks and improve efficiency
 
