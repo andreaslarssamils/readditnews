@@ -6,7 +6,9 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 400;
+
   color: var(--text-color);
   background-color: #f7fafc;
 }
@@ -42,7 +44,14 @@ body {
   padding: 0.5rem 1rem;
 }
 
+.auth-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 h1, h2, h3, h4, h5, h6 {
+  font-size: 1.5rem;
+  font-family: 'Google Sans', sans-serif;
   color: var(--secondary-color);
   font-weight: 600;
 }

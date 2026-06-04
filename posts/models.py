@@ -86,6 +86,7 @@ class Comment(models.Model):
 
 
 class Vote(models.Model):
+    """ Model representing a vote (upvote or downvote) on a blog post. """
     UPVOTE = 1
     DOWNVOTE = -1
     VALUE_CHOICES = [(UPVOTE, "Upvote"), (DOWNVOTE, "Downvote")]

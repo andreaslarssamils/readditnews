@@ -15,6 +15,73 @@ A news discussion platform where users can post, read, and comment on news stori
 - Ensure secure authentication and user management
 - Provide moderation tools for maintaining content quality
 
+## Design
+
+### Wireframes
+
+    - Homepage (Feed)
+![Homepage Wireframe](/media/homepage-feed-wireframe.png)
+    - Post Detail
+![Post Detail Wireframe](/media/post-detail-wireframe.png)
+    - Login
+![Login Wireframe](/media/login-wireframe.png)
+    - Registration
+![Registration Wireframe](/media/registration-wireframe.png)
+
+### Colour Scheme
+
+The colour palette uses cool blue-greys as the foundation,
+with a purple-blue accent for interactive elements. The
+combination gives the platform a calm, professional feel
+while maintaining clear visual hierarchy.
+
+| Role                  | Variable / Class      | Hex       |
+|-----------------------|-----------------------|-----------|
+| Page background       | `body`                | `#f7fafc` |
+| Primary text          | `--text-color`        | `#1a202C` |
+| Headings              | `--secondary-color`   | `#2d3748` |
+| Primary UI elements   | `--primary-color`     | `#4a5568` |
+| Accent / interactive  | `--accent-color`      | `#667eea` |
+| Card border / divider | `footer border`       | `#e2e8f0` |
+
+CSS custom properties (variables) are used throughout
+for consistency and maintainability. The accent colour
+(`#667EEA`) is applied to primary buttons, links, and
+active states, with a subtle lift animation on hover
+(`translateY(-2px)`) to reinforce interactivity.
+
+Cards use `box-shadow` instead of borders for a softer,
+more modern look, with an elevated shadow on hover to
+indicate clickability.
+
+---
+
+### Typography
+
+| Role | Font | Weight | Size |
+|------|------|--------|------|
+| Headings | Google Sans | 600 | 1.5rem |
+| Body text | Source Serif 4 / Serif | 400 | 1rem |
+
+Google Sans is used for all headings to give the platform
+a clean, modern feel — its geometric clarity suits a
+fast-paced news environment. Source Serif 4 is used for
+body text and UI elements, providing a journalistic warmth
+that complements the sans-serif headings and improves
+readability for longer content.
+
+Both fonts are loaded via Google Fonts.
+
+---
+
+### Imagery
+
+- Post images are optional and uploaded by users via Cloudinary.
+- Images are displayed as thumbnails in the feed and as a full-width header on the post detail page.
+- No images are required — the layout adapts gracefully to text-only posts.
+- A placeholder is shown when no image has been uploaded.
+- Favicons and logo follow the same red-accent colour as the rest of the UI.
+
 ## User Stories
 
 ### Guest (Not Logged In)
@@ -302,7 +369,7 @@ As an admin, I want to approve or reject posts so that only appropriate content 
 
 ## Technologies Used
 - dj-database-url-3.1.2
-- django-4.2
+- Django-5.2.13
 - gunicorn-25.3.0
 - psycopg2-binary-2.9.11
 - whitenoise-6.12.0
