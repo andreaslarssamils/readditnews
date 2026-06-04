@@ -1,6 +1,8 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import (
@@ -37,13 +39,13 @@ class PostListView(ListView):
         if sort == "oldest":
             qs = qs.order_by("created_at")
         elif sort == "most_voted":
-            qs = qs.annotate(
-                score=Coalesce(Sum("votes__value"), Value(0))
-                ).order_by("-score")
+            qs = qs.annotate(score=Coalesce(Sum("votes__value"), Value(0))).order_by(
+                "-score"
+            )
         elif sort == "least_voted":
-            qs = qs.annotate(
-                score=Coalesce(Sum("votes__value"), Value(0))
-                ).order_by("score")
+            qs = qs.annotate(score=Coalesce(Sum("votes__value"), Value(0))).order_by(
+                "score"
+            )
         else:  # newest (default)
             qs = qs.order_by("-created_at")
 
@@ -74,20 +76,30 @@ class PostDetailView(DetailView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = CommentForm(request.POST)
-        if form.is_valid() and request.user.is_authenticated:
+
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to leave a comment.")
+        elif form.is_valid():
             comment = form.save(commit=False)
             comment.post = self.object
             comment.author = request.user
             comment.save()
+            messages.success(request, "Your comment was added.")
+        else:
+            messages.error(
+                request, "There was an error with your comment. Please try again."
+            )
+
         return redirect("post_detail", slug=self.object.slug)
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """View to create a new post. Only accessible to logged-in users."""
 
     model = Post
     template_name = "posts/post_create.html"
     form_class = PostForm
+    success_message = "Your post was created successfully."
 
     def get_success_url(self):
         return reverse_lazy("post_detail", kwargs={"slug": self.object.slug})
@@ -97,15 +109,18 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PostUpdateView(
+    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView
+):
     """
-        View to edit an existing post.
-        Only accessible to the author of the post.
+    View to edit an existing post.
+    Only accessible to the author of the post.
     """
 
     model = Post
     template_name = "posts/post_edit.html"
     form_class = PostForm
+    success_message = "Your post was updated successfully."
 
     def test_func(self):
         return self.get_object().author == self.request.user
@@ -114,26 +129,31 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse_lazy("post_detail", kwargs={"slug": self.object.slug})
 
 
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class PostDeleteView(
+    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView
+):
     """View to delete a post. Only accessible to the author of the post."""
 
     model = Post
     template_name = "posts/post_confirm_delete.html"
     success_url = reverse_lazy("post_list")
+    success_message = "Your post was deleted."
 
     def test_func(self):
         return self.get_object().author == self.request.user
 
 
 class PostVoteView(LoginRequiredMixin, View):
+    """View to handle upvote and downvote actions on posts."""
+
     def post(self, request, slug, value):
         value = int(value)
-        post = Post.objects.get(slug=slug)
+        post = get_object_or_404(Post, slug=slug)
         existing = Vote.objects.filter(post=post, user=request.user).first()
 
         if existing:
             if existing.value == value:
-                existing.delete()  # Samma röst igen = ta bort
+                existing.delete()
             else:
                 existing.value = value
                 existing.save()
